@@ -30,10 +30,10 @@ class Matrix:
 
 		self.create_C_matrix(new_mults)
 
-	def convert_types(self, T):
+	def convert_types(self):
 		n = self.n
-		self.C_matrix = [[T(0) for i in range(self.n)] for j in range(self.n + 1)]
-		m = len(self.C[0])
+		self.C_matrix = [[T(0) for i in range(self.n + 1)] for j in range(self.n)]
+		m = len(self.C_matrix[0])
 		newX = []
 		newB = []
 
@@ -185,7 +185,7 @@ class Matrix:
 			Xprim[i] = C[i][n] / C[i][i]
 			for k in range(i - 1, -1, -1):
 				C[k][n] -= C[k][i] * Xprim[i]
-		self.print_Xprim()
+		# self.print_Xprim()
 		return Xprim
 
 	def gauss_part(self):
@@ -205,7 +205,7 @@ class Matrix:
 			for k in range(i - 1, -1, -1):
 				C[k][n] -= C[k][i] * Xprim[i]
 
-		self.print_Xprim()
+		# self.print_Xprim()
 		return Xprim
 
 	def gauss_full(self):
@@ -225,5 +225,5 @@ class Matrix:
 			for k in range(i - 1, -1, -1):
 				C[k][n] -= C[k][i] * Xprim[i]
 
-		self.print_Xprim()
+		# self.print_Xprim()
 		return Xprim
