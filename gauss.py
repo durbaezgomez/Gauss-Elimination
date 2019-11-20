@@ -1,10 +1,9 @@
 # TO BE COMPILED WITH PYTHON >= 3.0
 
 from fraction import *
-import matplotlib.pyplot as plt
 import math
-import time
 import random as rnd
+from copy import deepcopy
 from decimal import *
 from typing import TypeVar, Generic
 
@@ -97,6 +96,14 @@ class Matrix:
 		s += "\n"
 		print(s)
 
+	def print_Array(self, C):
+		s = "MATRIX:\n"
+		for i in range(self.n):
+			for j in range(self.n + 1):
+				s += str(C[i][j]) + "   "
+			s += "\n"
+		print(s)
+
 	def print_All(self):
 		self.print_A()
 		self.print_B()
@@ -110,10 +117,9 @@ class Matrix:
 	def swap_rows(self, C, current_i, current_j):
 		n = len(C)
 		m = len(C[0])
-		T = self.T
 
 		max_index = 0
-		max1 = T(0)
+		max1 = C[current_i][current_j]
 		found = False
 		for i in range(current_i, n):
 			if abs(C[i][current_j]) > abs(max1):
@@ -125,19 +131,16 @@ class Matrix:
 				temp = C[current_i][j]
 				C[current_i][j] = C[max_index][j]
 				C[max_index][j] = temp
-
-		self.print_C()
 		return C
 
 	def swap_cols(self, C, current_i, current_j):
 		n = len(C)
 		m = len(C[0])
-		T = self.T
 
 		max_index = 0
-		max1 = T(0)
+		max1 = C[current_i][current_j]
 		found = False
-		for j in range(current_j, m):
+		for j in range(current_j, n):
 			if abs(C[current_i][j]) > abs(max1):
 				max1 = C[current_i][j]
 				max_index = j
@@ -147,13 +150,11 @@ class Matrix:
 				temp = C[i][current_j]
 				C[i][current_j] = C[i][max_index]
 				C[i][max_index] = temp
-
-		self.print_C()
 		return C
 
 	def swap_all(self, C, current_i, current_j):
-		C = self.swap_rows(C, current_i, current_j)
 		C = self.swap_cols(C, current_i, current_j)
+		C = self.swap_rows(C, current_i, current_j)
 		return C
 
 	def reduce(self, C, i):
@@ -171,93 +172,58 @@ class Matrix:
 
 	def gauss(self):
 		n = self.n
-		C = self.C_matrix.copy()
+		C = deepcopy(self.C_matrix)
 		Xprim = self.Xprim
 		m = len(C[0])
 
-		print("C BEFORE:\n")
-		self.print_C()
-
 		for i in range(n):
 			if C[i][i] == 0:
-				return
+				C = self.swap_rows(C, i, i)
 			C = self.reduce(C, i)
+
 		for i in range(n - 1, -1, -1):
 			Xprim[i] = C[i][n] / C[i][i]
 			for k in range(i - 1, -1, -1):
 				C[k][n] -= C[k][i] * Xprim[i]
-		print("C AFTER:\n")
-		self.print_C()
 		self.print_Xprim()
 		return Xprim
 
 	def gauss_part(self):
 		n = self.n
-		C = self.C_matrix.copy()
+		C = deepcopy(self.C_matrix)
 		Xprim = self.Xprim
 		m = len(C[0])
 
-		print("C BEFORE:\n")
-		self.print_C()
-
 		for i in range(n):
-
 			C = self.swap_rows(C, i, i)
-
 			if C[i][i] == 0:
 				C = self.swap_rows(C, i, i)
 			C = self.reduce(C, i)
+
 		for i in range(n - 1, -1, -1):
 			Xprim[i] = C[i][n] / C[i][i]
 			for k in range(i - 1, -1, -1):
 				C[k][n] -= C[k][i] * Xprim[i]
 
-		print("C AFTER:\n")
-		self.print_C()
 		self.print_Xprim()
 		return Xprim
 
 	def gauss_full(self):
 		n = self.n
-		C = self.C_matrix.copy()
+		C = deepcopy(self.C_matrix)
 		Xprim = self.Xprim
 		m = len(C[0])
 
-		print("C BEFORE:\n")
-		self.print_C()
-
 		for i in range(n):
-
-			C = self.swap_all(C, i, i) ## dodane
-
+			C = self.swap_all(C, i, i)
 			if C[i][i] == 0:
 				C = self.swap_all(C, i, i)
-
 			C = self.reduce(C, i)
-			self.print_C()
 
 		for i in range(n - 1, -1, -1):
 			Xprim[i] = C[i][n] / C[i][i]
 			for k in range(i - 1, -1, -1):
 				C[k][n] -= C[k][i] * Xprim[i]
 
-		print("C AFTER:\n")
-		self.print_C()
 		self.print_Xprim()
 		return Xprim
-
-#MAIN
-
-getcontext().prec = 7
-
-a = Matrix(Decimal, 4)
-a.print_X()
-# a.gauss()
-# a.gauss_part()
-a.gauss_full()
-
-# a.print_C()
-# a.swap_all(a.C_matrix, 0, 0)
-# a.swap_all(a.C_matrix, 1, 1)
-# a.swap_all(a.C_matrix, 2, 2)
-# a.swap_all(a.C_matrix, 3, 3)

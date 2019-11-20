@@ -1,4 +1,6 @@
 from gauss import *
+import matplotlib.pyplot as plt
+import time
 
 class Tests:
     global sizes_array
