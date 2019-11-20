@@ -30,7 +30,7 @@ class Matrix:
 
 		self.create_C_matrix(new_mults)
 
-	def convert_types(self):
+	def convert_types(self, T):
 		n = self.n
 		self.C_matrix = [[T(0) for i in range(self.n + 1)] for j in range(self.n)]
 		m = len(self.C_matrix[0])
