@@ -15,8 +15,9 @@ class Matrix:
     def __init__(self, T, n):
         self.T = T
         self.n = n
-        self.A = [[T(rnd.randint(1, 1000)) for i in range(n)] for j in range(n)]
-        self.X = [T(rnd.randint(1, 1000)) for i in range(n)]
+        self.A = [[T(self.generate_r()) for i in range(n)] for j in range(n)]
+        self.X = [T(self.generate_r()) for i in range(n)]
+        self.Xprim = [T(0) for i in range(n)]
         self.B = [self.T(0) for i in range(n)]
         self.C = [[T(0) for i in range(self.n + 1)] for j in range(self.n + 1)]
 
@@ -54,17 +55,11 @@ class Matrix:
         self.find_B(False)
 
     def create_C_matrix(self, new_mults):
-        if new_mults:
-            r1 = self.generate_mult()
-            r2 = self.generate_mult()
-        else:
-            r1 = 1
-            r2 = 1
         for i in range(self.n):
             for j in range(self.n):
-                self.C[i][j] = self.A[i][j] * r1
+                self.C[i][j] = self.A[i][j]
         for i in range(self.n):
-            self.C[i][self.n] = self.B[i] * r2
+            self.C[i][self.n] = self.B[i]
 
     def print_A(self):
         s = "MATRIX A\n"
@@ -95,14 +90,22 @@ class Matrix:
         s += "\n"
         print(s)
 
+    def print_Xprim(self):
+        s = "MATRIX X\n"
+        for i in range(self.n):
+            s += str(self.Xprim[i]) + "   "
+        s += "\n"
+        print(s)
+
     def print_All(self):
         self.print_A()
         self.print_B()
         self.print_C()
         self.print_X()
 
-    def generate_mult(self):
-        return self.T(rnd.randint(-65536, 65535) / 65536)
+    def generate_r(self):
+        # return self.T(rnd.randint(-65536, 65535) / 65536)
+        return rnd.randint(1,5)
 
     def swap_rows(self, C, current_i, current_j):
         n = len(C)
@@ -158,8 +161,8 @@ class Matrix:
 
     def gauss(self):
         n = self.n
-        ret = [self.T(0) for i in range(n)]
         C = self.C
+        Xprim = self.Xprim
         m = len(C)
 
         print("C BEFORE:\n")
@@ -177,18 +180,18 @@ class Matrix:
                     C[j][k] -= C[i][k] * C[j][i]
 
         for i in range(n - 1, -1, -1):
-            ret[i] = C[i][n] / C[i][i]
+            Xprim[i] = C[i][n] / C[i][i]
             for k in range(i - 1, -1, -1):
-                C[k][n] -= C[k][i] * ret[i]
+                C[k][n] -= C[k][i] * Xprim[i]
         print("C AFTER:\n")
         self.print_C()
-        self.print_X()
-        return ret
+        self.print_Xprim()
+        return Xprim
 
     def gauss_part(self):
         n = self.n
-        ret = [self.T(0) for i in range(n)]
         C = self.C
+        Xprim = self.Xprim
         m = len(C)
 
         print("C BEFORE:\n")
@@ -210,19 +213,19 @@ class Matrix:
             self.print_C()
 
         for i in range(n - 1, -1, -1):
-            ret[i] = C[i][n] / C[i][i]
+            Xprim[i] = C[i][n] / C[i][i]
             for k in range(i - 1, -1, -1):
-                C[k][n] -= C[k][i] * ret[i]
+                C[k][n] -= C[k][i] * Xprim[i]
 
         print("C AFTER:\n")
         self.print_C()
-        self.print_X()
-        return ret
+        self.print_Xprim()
+        return Xprim
 
     def gauss_full(self):
         n = self.n
-        ret = [self.T(0) for i in range(n)]
         C = self.C
+        Xprim = self.Xprim
         m = len(C)
 
         print("C BEFORE:\n")
@@ -245,11 +248,21 @@ class Matrix:
             self.print_C()
 
         for i in range(n - 1, -1, -1):
-            ret[i] = C[i][n] / C[i][i]
+            Xprim[i] = C[i][n] / C[i][i]
             for k in range(i - 1, -1, -1):
-                C[k][n] -= C[k][i] * ret[i]
+                C[k][n] -= C[k][i] * Xprim[i]
 
         print("C AFTER:\n")
         self.print_C()
-        self.print_X()
-        return ret
+        self.print_Xprim()
+        return Xprim
+
+#MAIN
+
+getcontext().prec = 7
+
+a = Matrix(Decimal, 4)
+a.print_All()
+a.gauss()
+a.gauss_part()
+a.gauss_full()
