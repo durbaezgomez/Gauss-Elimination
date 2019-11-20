@@ -1,9 +1,7 @@
 # TO BE COMPILED WITH PYTHON >= 3.0
 
 from fraction import *
-import matplotlib.pyplot as plt
 import math
-import time
 import random as rnd
 from copy import deepcopy
 from decimal import *
