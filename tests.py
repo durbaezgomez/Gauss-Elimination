@@ -13,7 +13,8 @@ class Tests:
 
     @staticmethod
     def count_error(X, Xprim, size):  # counting an error with fraction matrix result usage
-        error_summary = 0
+        error_summary_X = 0
+        error_summary_Xprim = 0
         if isinstance(X[0], Fraction):
             for i in range(size):
                 error_summary = (X[i] - Xprim[i]).abs()
@@ -21,8 +22,9 @@ class Tests:
             return (error_summary / size_fract)
         else:
             for i in range(size):
-                error_summary = abs(X[i] - Xprim[i])
-            return math.log(error_summary / size)
+                error_summary_X += abs(X[i])
+                error_summary_Xprim += abs(Xprim[i])
+            return math.log(abs(error_summary_X/size - error_summary_Xprim/size))
 
     # zbadanie czasu i bledu dla n = size_large dla macierzy kazdego typu z uzyciem kazdej metody
 
@@ -210,9 +212,9 @@ class Tests:
         td_time_sum_method3 /= repeats
 
 
-        plt.scatter([1, 2, 3], [tf_error_sum_method1, tf_error_sum_method2, tf_error_sum_method3],
+        plt.bar([1, 2, 3], [tf_error_sum_method1, tf_error_sum_method2, tf_error_sum_method3],
                     label="dla dokladnosci pojedynczej precyzji", marker=".")
-        plt.scatter([1, 2, 3], [td_error_sum_method1, td_error_sum_method2, td_error_sum_method3],
+        plt.bar([1, 2, 3], [td_error_sum_method1, td_error_sum_method2, td_error_sum_method3],
                     label="dla dokladnosci podwojnej precyzji", marker=".")
         # plt.scatter([tc_error_sum_method1, tc_error_sum_method2, tc_error_sum_method3], [1, 2, 3],
         #             label="dla typu fraction", marker=".")
